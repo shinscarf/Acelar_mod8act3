@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Generator</title>
+    <style>
+        .outer {
+            border-style: dashed;
+            border: 100 em;
+            text-align: center;
+            width: 75%;
+            margin: auto;
+            justify-content: center;
+            background-color: #EAC9C1;
+        }
+        
+        .inner {
+            width: 50%;
+            /*background-color: rgb(140, 198, 248);*/
+            margin: auto;
+            display: flex;
+            justify-content: space-around;
+            height: 90px;
+            color: crimson;
+        }
+        
+        .boxborder {
+            border: 5px solid brown;
+            height: 85px;
+            flex: 1;
+        }
+
+        body{
+            background-image: url("bookz.jpg");
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="outer">
+        <h1>Literary Frenzy!</h1>
+        <hr>
+        <h3>In this certain Literary Competition, there are three groups of participants, <br> namely: Alpha, Beta, and Charlie.</h3>
+        <h3>The number of medals each group achieved are: </h3>
+        <div class="inner">
+            <div class="boxborder">
+                <p id="categ1"></p>
+            </div>
+            <div class="boxborder">
+                <p id="categ2"></p>
+            </div>
+            <div class="boxborder">
+                <p id="categ3"></p>
+            </div>
+        </div>
+        <div>
+            <p id="biggestNum"></p>
+        </div>
+        <p id="demo3"></p>
+        <p id="demo4"></p>
+    </div>
+    <script>
+        var num = Array(3);
+        const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+        var grName = "";
+        var bigNum = Array(2);
+        var bigG = 0;
+        var idx = 0;
+        var numOfGrpTie = 0;
+        var otherGrpName = "";
+
+        //getting three random numbers
+        for (let i = 0; i < 3; i++) {
+            num[i] = Math.floor(Math.random() * 21);
+        }
+        var bigN = num[0];
+        bigNum = getBiggestNum();
+        bigG = bigNum[0];
+        bigN = bigNum[1];
+        grName = getGrpName(bigG);
+        console.log(grpName);
+
+
+        //display each group and their achieved medals
+        document.getElementById("categ1").innerHTML = ('<b>Alpha <br>' + num[0] + '</b>');
+        document.getElementById("categ2").innerHTML = ('<b>Beta <br>' + num[1] + '</b>');
+        document.getElementById("categ3").innerHTML = ('<b>Charlie <br>' + num[2] + '</b>');
+
+
+        numOfGrpTie = checkSameValue(bigG);
+        if (numOfGrpTie >= 1) {
+            idx = getIdxGrp(bigG);
+            otherGrpName = getGrpName(idx);
+            var displayResult = grName + " and " + otherGrpName
+                //display the groups with the most number of medals
+            document.getElementById("biggestNum").innerHTML = ('The groups which have the most number of  medals are: <b>' + displayResult + ":" + bigN + '</b>');
+        } else {
+
+            //display the group with the most number of medals
+            document.getElementById("biggestNum").innerHTML = ('The group which has the most number of  medals is: <b>' + grName + " " + bigN + '</b>');
+        }
+        //get the index for the alphabet and get the corresponding letter
+        var alphaIdx = num[0] - 1;
+        var initial = "";
+        if (alphaIdx < 0) {
+            initial = "Anonymous";
+        } else {
+            initial = alphabet[alphaIdx];
+        }
+
+        //display the Letter 
+        document.getElementById("demo3").innerHTML = ("The name of the participant with the most medals starts with: <b>" + initial + "</b>");
+
+        //calling function to get the hours and minutes
+        minToHr();
+
+        //function to get the hours and minutes and display the result        
+        function minToHr() {
+            var multiply = num[1] * num[2];
+            var hours = Math.floor(multiply / 60);
+            var mins = multiply % 60;
+            document.getElementById("demo4").innerHTML = ("The time it took to finish the whole competition:  <b> (" + multiply + ' minutes): ' + hours + ' hours ' + mins + ' minutes. </b>');
+        }
+
+        //getting the biggest number
+        function getBiggestNum() {
+            for (let i = 0; i < 3; i++) {
+                for (let j = 1; j < 3; j++) {
+                    var otherN = num[j];
+                    if (bigN < otherN) {
+                        bigN = otherN;
+                        bigG = j;
+                    }
+                }
+            }
+            return [bigG, bigN];
+        }
+        //get Group Name 
+        var grpName = "";
+
+        function getGrpName(a) {
+            if (a == 0) {
+                grpName = 'Alpha';
+            } else if (a == 1) {
+                grpName = 'Beta';
+            } else if (a == 2) {
+                grpName = 'Charlie'
+            }
+            return grpName;
+        }
+
+        //get Groups with the same number of medals
+        function grpTies() {
+            for (let i = 0; i < 3; i++) {
+                for (let j = i + 1; j < 3; j++) {
+                    if (num[i] == num[j]) {
+                        numOfGrpTie++;
+                    }
+                }
+            }
+        }
+
+        //Check if the 3 random numbers have the same value
+        function checkSameValue(a) {
+            var count = 0
+            for (let i = 0; i < 3; i++) {
+                if (a != i) {
+                    if (num[a] == num[i]) {
+                        count = count + 1;
+                    }
+                }
+            }
+            return count;
+        }
+
+        // Get the groupname of the other group with most number of medals
+        function getIdxGrp(a) {
+            var Grpindex = 0;
+            a = Number(a);
+            for (let i = 0; i < 3; i++) {
+                if (a != i) {
+                    if (num[a] == num[i]) {
+                        Grpindex = i;
+                    }
+                }
+            }
+            return Grpindex;
+        }
+    </script>
+</body>
+
+</html>
